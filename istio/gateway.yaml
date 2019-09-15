@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: makex-gateway
+  namespace: gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*/*.k8s.front-end.cn"
+    - port:
+        number: 1883
+        name: mqtt
+        protocol: TCP
+      hosts:
+        - "*/*.k8s.front-end.cn"

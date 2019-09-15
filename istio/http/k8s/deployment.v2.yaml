@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-v2
+  labels:
+    app: http
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: http
+      labels:
+        app: http
+        version: v2
+    spec:
+      containers:
+        - name: http
+          image: registry.cn-zhangjiakou.aliyuncs.com/cheerego/http
+          imagePullPolicy: Always
+          env:
+            - name: VERSION
+              value: v2
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: cheerego
+  selector:
+    matchLabels:
+      app: http

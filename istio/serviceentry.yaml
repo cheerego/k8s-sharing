@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: http
+spec:
+  hosts:
+    - "www.baidu.com"
+    - "*.aliyuncs.com"
+    - "registry.cn-zhangjiakou.aliyuncs.com"
+    - "registry.cn-shenzhen.aliyuncs.com"
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+    - number: 80
+      name: http
+      protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+  exportTo:
+    - "*"
+
+
