@@ -6,3 +6,6 @@
   * [部署Nignx](k8s/部署一个nginx.md)
 * [2.Istio](istio/istio.md) 
   * [基础概念](istio/istio.md)
+  * [部署Nginx](istio/部署nginx.md)
+  * [部署HTTP](istio/部署http服务.md)
+  * [了解ServiceEntry](istio/serviceentry.md)

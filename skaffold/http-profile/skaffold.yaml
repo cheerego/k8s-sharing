@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1beta1
+kind: Config
+profiles:
+  - name: test
+    build:
+      artifacts:
+        - image: registry.cn-zhangjiakou.aliyuncs.com/cheerego/http
+          docker:
+            buildArgs:
+              SET_NODE_ENV: hkn
+    deploy:
+      kubectl:
+        manifests:
+          - k8s-*

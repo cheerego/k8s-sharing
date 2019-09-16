@@ -58,8 +58,13 @@ Pilot 为 Envoy 提供服务发现；为高级路由（例如，A / B 测试，�
 ##### VirtualService
 ```
 Virtual  Services 的作用是：定义了针对 Istio 中的一个微服务的请求的路由规则。Virtual services 既可以将请求路由到一个应用的不同版本，也可以将请求路由到完全不同的应用。
+
+说白了就是，一个路由怎么找到Service
 ```
 ##### DestinationRule
+```
+说白了就是服务找到了去哪一个POD
+```
 
 ##### ServiceEntry
 ```bazaar
