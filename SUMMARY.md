@@ -9,3 +9,5 @@
   * [部署Nginx](istio/部署nginx.md)
   * [部署HTTP](istio/部署http服务.md)
   * [了解ServiceEntry](istio/serviceentry.md)
+* [3.Skaffold](skaffold/skaffold.md)
+  * [初见](skaffold/skaffold.md)
