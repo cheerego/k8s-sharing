@@ -1,32 +1,23 @@
-apiVersion: skaffold/v1beta1
+apiVersion: skaffold/v1beta13
 kind: Config
-build:
-  artifacts:
-    - image: registry.cn-zhangjiakou.aliyuncs.com/cheerego/http
-deploy:
-  kubectl:
-    manifests:
-      - k8s-*
+
 profiles:
-  - name: test
+  - name: default
     build:
       artifacts:
-        - image: registry.cn-hangzhou.aliyuncs.com/makex/www.test.zh
-          docker:
-            buildArgs:
-              ENV: k8s
+      - image: registry.cn-zhangjiakou.aliyuncs.com/cheerego/http
     deploy:
       helm:
         releases:
-          - name: www-helm-test
-            chartPath: www-helm
-            namespace: test
+          - name: http-helm-default
+            chartPath: http-helm
+            namespace: default
             values:
-              image.repository: registry.cn-hangzhou.aliyuncs.com/makex/www.test.zh
+              image.repository: registry.cn-zhangjiakou.aliyuncs.com/cheerego/http
             setValues:
-              imagePullSecrets: makex-hangzhou
-              service.port: 80
+              imagePullSecrets: cheerego
+              service.port: 8080
+              env.ENV: default
             setValueTemplates:   # 使用内置变量必须使用setValueTemplates
               image.repository: "{{ .IMAGE_NAME }}"
               image.tag: "{{ .DIGEST }}"
-              image.pullPolicy: "Always"

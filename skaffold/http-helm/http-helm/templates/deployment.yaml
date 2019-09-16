@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }}
+  labels:
+    app: {{ include "fullname" . }}
+    helm.sh/chart: {{ include "chart-intro" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "name" . }}
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "name" . }}
+        version: {{ .Values.version }}
+        helm.sh/chart: {{ include "chart-intro" . }}
+    spec:
+      containers:
+        - name: {{ include "name" . }}
+          image: "{{ .Values.image.repository }}:{{.Values.image.tag}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ include "name" .}}
+              containerPort: {{ .Values.service.port }}
+          env:
+            - name: ENV
+              value: {{ .Values.env.ENV }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
