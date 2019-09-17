@@ -94,9 +94,38 @@ Service B所在Pod接收请求
 以上的流程可以观察到，服务之间通信完全依靠 Proxy 进程完成，Proxy 进程接管同一个 Pod 中服务的出入流量，完成请求的路由。
 
 
-Pilot Discovery: Istio的交通大脑
-Pilot Discovery负责Istio服务发现，支持在Kubernetes里部署，它读取K8S资源配置，并生成Proxy可用的路由表。以下面的Service A服务为例，介绍Istio如何进行精细路由。
+![avatar](../pilot总体架构.jpg)
 
+
+POD的sidecar跑的进程
+```
+istio-proxy@redis-c9699b6cb-99r9b:/$ ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+istio-p+     1  0.0  0.1 134172 14972 ?        Ssl  Sep16   0:10 /usr/local/bin/pilot-agent proxy sidecar --domain default.svc.cluster.local --configPath /etc/istio/proxy --b
+istio-p+    17  0.0  0.3 141756 29784 ?        Sl   Sep16   0:45 /usr/local/bin/envoy -c /etc/istio/proxy/envoy-rev0.json --restart-epoch 0 --drain-time-s 45 --parent-shutdow
+istio-p+    41  0.1  0.0  18236  1980 pts/0    Ss   09:38   0:00 bash
+istio-p+    52  0.0  0.0  34412  1436 pts/0    R+   09:38   0:00 ps aux
+```
+
+#### istio-pilot 数据面
+discovery service : 从 Kubernetes apiserver list/watch service、endpoint、pod、node 等资源信息，监听 istio 控制平面配置信息（如VirtualService、DestinationRule等）， 翻译为 Envoy 可以直接理解的配置格式。
+
+#### Istio proxy
+##### Envoy
+```
+Envoy由Pilot-agent进程启动，启动后，Envoy读取Pilot-agent为它生成的配置文件，然后根据该文件的配置获取到Pilot的地址，通过数据面标准API的xDS接口从pilot获取动态配置信息，包括路由（route），监听器（listener），服务集群（cluster）和服务端点（endpoint）。Envoy初始化完成后，就根据这些配置信息对微服务间的通信进行寻址和路由。
+```
+###### Pilot-agent
+```
+该进程根据K8S API Server中的配置信息生成Envoy的配置文件，并负责启动Envoy进程。
+注意Envoy的大部分配置信息都是通过xDS接口从Pilot中动态获取的，因此Agent生成的只是用于初始化Envoy的少量静态配置。在后面的章节中，本文将对Agent生成的Envoy配置文件进行进一步分析。
+
+控制 envoy 优雅的关闭或重启 
+```
+
+proxy : 也就是 Envoy，直接连接 discovery service，间接地从 Kubernetes 等服务注册中心获取集群中微服务的注册情况。
+agent : 生成 Envoy 配置文件，管理 Envoy 生命周期。
+service A/B : 使用了 Istio 的应用，如 Service A/B，的进出网络流量会被 proxy 接管。
 
 
 Proxy工作机制
