@@ -90,6 +90,9 @@ Service 一个应用的抽象，是定义POD逻辑集合和访问这个集合的
 服务发现
 发布服务
 ```
+Service 是一个概念，主要做到分发作用的是每个节点上的 kube-proxy
+早起的kube-proxy 通过 IPtable 实现：kube-proxy 和 Api Server 交互 Watch Service的改变，然后修改 IPtable，有一个缺点就是服务变多了之后 kube-proxy 维护的 iptable 就会变得很庞大。
+后来kube-proxy 改成了 ipvs（IP virtual Server）
 
 K8S是如何进行服务发现的？
 
