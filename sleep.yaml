@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleep
+  labels:
+    app: sleep
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: sleep
+      labels:
+        app: sleep
+    spec:
+      containers:
+        - name: sleep
+          image: pstauffer/curl
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sleep", "3650d"]
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: sleep

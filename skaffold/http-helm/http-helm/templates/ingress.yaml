@@ -1,12 +1,12 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "helm.fullname" . -}}
+{{- $fullName := include "http-helm.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "helm.name" . }}
-    helm.sh/chart: {{ include "helm.chart" . }}
+    app.kubernetes.io/name: {{ include "http-helm.name" . }}
+    helm.sh/chart: {{ include "http-helm.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}

@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "name" . }}
+  labels:
+    helm.sh/chart: {{ include "chart-intro" . }}
+spec:
+  hosts:
+  - http.k8s.front-end.cn
+  - {{ include "name" . }}
+  gateways:
+  - gateway/makex-gateway
+  http:
+  - route:
+    - destination:
+        host: {{ include "name" . }}
+        port:
+          number: {{ .Values.service.port }}
+        subset: {{ .Values.version }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ include "name" . }}
+  labels:
+    helm.sh/chart: {{ include "chart-intro" . }}
+spec:
+  host: {{ include "name" . }}
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+  - name: {{ .Values.version }}
+    labels:
+      version: {{ .Values.version }}
